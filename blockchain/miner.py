@@ -42,14 +42,15 @@ def valid_proof(last_hash, proof):
     IE:  last_hash: ...AE912345, new hash 12345E88...
     """
 
-    prev_guess = f"{last_hash}{proof}".encode()
+    prev_guess = f"{last_hash}".encode()
     prev_guess_hash = hashlib.sha256(prev_guess).hexdigest()
 
     curr_proof = f'{proof}'.encode()
     curr_proof_hash = hashlib.sha256(curr_proof).hexdigest()
 
-    # Return "True" when first six characters of hash equal to the last six characters 
-    return prev_guess_hash[-6:] == curr_proof_hash[:6]
+    # Return "True" when first five characters of hash equal to the last five characters 
+
+    return prev_guess_hash[-5:] == curr_proof_hash[:5]
 
 
 if __name__ == '__main__':

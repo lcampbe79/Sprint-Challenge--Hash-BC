@@ -20,4 +20,16 @@ def reconstruct_trip(tickets, length):
     YOUR CODE HERE
     """
 
-    pass
+    for t in tickets:
+        #inserts each ticket into the hash table based on key
+        hash_table_insert(hashtable, t.source, t.destination)
+
+    starting_point = "NONE"
+    #loops through every item in hash table
+    for i in range(length):
+        #route is set equal to hash_table_retrieve
+        route[i] = hash_table_retrieve(hashtable, starting_point)
+        #Starting point is equal to the route[0] route[1]
+        starting_point = route[i]
+    #Gets rid of None
+    return route[:len(route)-1] 

@@ -23,8 +23,11 @@ def proof_of_work(last_proof):
     start = timer()
 
     print("Searching for next proof")
-    proof = 0
-    #  TODO: Your code here
+    proof = 25252525
+    
+    # While valid_proof 
+    while valid_proof(last_proof, proof) is False:
+        proof += 1
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
@@ -39,8 +42,15 @@ def valid_proof(last_hash, proof):
     IE:  last_hash: ...AE912345, new hash 12345E88...
     """
 
-    # TODO: Your code here!
-    pass
+    prev_guess = f"{last_hash}".encode()
+    prev_guess_hash = hashlib.sha256(prev_guess).hexdigest()
+
+    curr_proof = f'{proof}'.encode()
+    curr_proof_hash = hashlib.sha256(curr_proof).hexdigest()
+
+    # Return "True" when first five characters of hash equal to the last five characters 
+
+    return prev_guess_hash[-5:] == curr_proof_hash[:5]
 
 
 if __name__ == '__main__':
@@ -49,7 +59,7 @@ if __name__ == '__main__':
         node = sys.argv[1]
     else:
         node = "https://lambda-coin.herokuapp.com/api"
-
+       
     coins_mined = 0
 
     # Load or create ID
@@ -65,8 +75,17 @@ if __name__ == '__main__':
     while True:
         # Get the last proof from the server
         r = requests.get(url=node + "/last_proof")
-        data = r.json()
+        try:
+            data = r.json()
+        except ValueError:
+            print("Error:  Non-json response")
+            print("Response returned:")
+            print(r)
+            break
+        # data = r.json()
         new_proof = proof_of_work(data.get('proof'))
+        if new_proof is None:
+            continue
 
         post_data = {"proof": new_proof,
                      "id": id}
